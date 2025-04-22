@@ -123,13 +123,32 @@ let myLeads = []
 const inputEl = document.getElementById("input-el")
 const inputBtn = document.getElementById("input-btn")
 const ulEl = document.getElementById("ul-el")
+const deleteBtn = document.getElementById("delete-btn")
+// 1. Store the delete button in a deleteBtn variable
+
+// ["lead1", "lead2"] or null
 
 // Get the leads from the localStorage
 // Store it in a variable, leadsFromLocalStorage
 // Log out the variable
 
-localStorage.clear() // Clear the localStorage
-let leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") )
+const leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") )
+console.log(leadsFromLocalStorage)
+
+// 1. Check if leadsFromLocalStorage is truthy
+// 2. If so, set myLeads to its value and call renderLeads()
+
+deleteBtn.addEventListener("dblclick", function() {
+    console.log("Deleted all the leads")
+    localStorage.clear() // Clear the localStorage
+    myLeads = [] // Set myLeads to an empty array
+    renderLeads()
+})
+
+if (leadsFromLocalStorage) {
+    myLeads = leadsFromLocalStorage // Set myLeads to its value and call renderLeads()
+    renderLeads()
+}
 
 // console.log( localStorage.getItem("myLeads") )
 
@@ -168,9 +187,9 @@ inputBtn.addEventListener("click", function() {
 
     // To verify that it works:
 
-    console.log( localStorage.getItem("myLeads") ) // Log the value of myLeads to the console saving it to localStorage
+    console.log( localStorage.getItem("myLeads")) // Log the value of myLeads to the console saving it to localStorage
 
-    // console.log(myLeads)
+    console.log(myLeads)
 })
 
 // 1. Create a variable, listItems, to hold all the HTML for the list items

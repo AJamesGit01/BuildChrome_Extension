@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Scrimba Build Chrome Extension",
+    "name": "Notepad Chrome Extension",
     "version": "1.0",
     "action": {
       "default_popup": "main/index.html",
