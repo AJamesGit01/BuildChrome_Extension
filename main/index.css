@@ -29,11 +29,13 @@ button {
     width: 30%;
     height: 40px;
     border: 1px solid #5f9341;
+    cursor: pointer;
     border-radius: 1px;
 }
 
 #delete-btn {
     background: #fff;
+    cursor: pointer;
     color: #5f9341;
 }
 
@@ -46,9 +48,23 @@ ul {
 }
 
 li {
-    margin-top: 5px;
-    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
 }
+
+.remove-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 2px;
+    height: 25px;
+    width: 70px;
+    cursor: pointer;
+    border-radius: 60px;
+}
+
 
 a {
     color: #5f9341;

@@ -27,11 +27,24 @@ function render(leads) {
                 <a target='_blank' href='${leads[i]}'>
                     ${leads[i]}
                 </a>
+                <button class='remove-btn' data-index='${i}'>&times;</button>
             </li>
         `
     }
     ulEl.innerHTML = listItems
+
+    // Add event listeners to remove buttons
+    const removeButtons = document.querySelectorAll(".remove-btn")
+    removeButtons.forEach(btn => {
+        btn.addEventListener("click", function() {
+            const index = this.getAttribute("data-index")
+            myLeads.splice(index, 1)
+            localStorage.setItem("myLeads", JSON.stringify(myLeads))
+            render(myLeads)
+        })
+    })
 }
+
 
 deleteBtn.addEventListener("dblclick", function() {
     localStorage.clear()
