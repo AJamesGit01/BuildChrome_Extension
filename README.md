@@ -3,7 +3,7 @@
 # 📄 Chrome Extension: Lead Tracker
 
 ## 📌 Overview
-**Lead Tracker** is a Chrome Extension that lets users save website URLs (from the current tab or manual input) and store them in local storage for easy access. Users can also delete all saved leads.
+**Lead Tracker** is a Chrome Extension that lets users save website URLs (from the current tab or manual input) and store them in local storage and Firebase for easy access. Users can also delete all saved leads.
 
 ---
 
