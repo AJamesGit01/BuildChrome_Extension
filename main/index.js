@@ -1,60 +1,98 @@
-let myLeads = []
-const inputEl = document.getElementById("input-el")
-const inputBtn = document.getElementById("input-btn")
-const ulEl = document.getElementById("ul-el")
-const deleteBtn = document.getElementById("delete-btn")
-const leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") )
-const tabBtn = document.getElementById("tab-btn")
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-if (leadsFromLocalStorage) {
-    myLeads = leadsFromLocalStorage
-    render(myLeads)
-}
+const firebaseConfig = {
+  databaseURL: "https://leads-tracker-app-35b7b-default-rtdb.asia-southeast1.firebasedatabase.app/"
+};
 
-tabBtn.addEventListener("click", function(){    
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-        myLeads.push(tabs[0].url)
-        localStorage.setItem("myLeads", JSON.stringify(myLeads) )
-        render(myLeads)
-    })
-})
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const dbRef = ref(database, "leads/");
 
+const inputEl = document.getElementById("input-el");
+const inputBtn = document.getElementById("input-btn");
+const saveBtn = document.getElementById("save-btn");
+const deleteBtn = document.getElementById("delete-btn");
+const ulEl = document.getElementById("ul-el");
+
+let myLeads = JSON.parse(localStorage.getItem("myLeads")) || [];
+
+// --- Save Manual Input ---
+inputBtn.addEventListener("click", function () {
+  const inputValue = inputEl.value.trim();
+  if (inputValue !== "") {
+    // Save to LocalStorage
+    myLeads.push(inputValue);
+    localStorage.setItem("myLeads", JSON.stringify(myLeads));
+
+    // Save to Firebase
+    push(dbRef, inputValue);
+    inputEl.value = "";
+    render(myLeads);
+  }
+});
+
+// --- Load from Firebase and Render on Load ---
+onValue(dbRef, (snapshot) => {
+  // Firebase data is already rendered in localStorage
+  render(myLeads);
+});
+
+// --- Render Function ---
 function render(leads) {
-    let listItems = ""
-    for (let i = 0; i < leads.length; i++) {
-        listItems += `
-            <li>
-                <a target='_blank' href='${leads[i]}'>
-                    ${leads[i]}
-                </a>
-                <button class='remove-btn' data-index='${i}'>&times;</button>
-            </li>
-        `
-    }
-    ulEl.innerHTML = listItems
+  let listItems = "";
+  leads.forEach((lead, index) => {
+    listItems += `
+      <li>
+        <a target='_blank' href='${lead}'>${lead}</a>
+        <button class='remove-btn' data-index='${index}'>&times;</button>
+      </li>
+    `;
+  });
+  ulEl.innerHTML = listItems;
 
-    // Add event listeners to remove buttons
-    const removeButtons = document.querySelectorAll(".remove-btn")
-    removeButtons.forEach(btn => {
-        btn.addEventListener("click", function() {
-            const index = this.getAttribute("data-index")
-            myLeads.splice(index, 1)
-            localStorage.setItem("myLeads", JSON.stringify(myLeads))
-            render(myLeads)
-        })
+  // Attach remove events
+  document.querySelectorAll(".remove-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const index = this.getAttribute("data-index");
+
+      const removedLead = myLeads[index];
+
+      // Remove from LocalStorage
+      myLeads.splice(index, 1);
+      localStorage.setItem("myLeads", JSON.stringify(myLeads));
+      render(myLeads);
+
+      onValue(dbRef, function(snapshot) {
+        const snapshotValues = snapshot.val()
+        const snapshotDoesExist = snapshot.exists()
+        if (snapshotDoesExist) {
+        // Challenge: Create a const called 'leads' which is an array containing the values inside of the snapshotValues object
+        const leads = Object.values(snapshotValues)
+      }
     })
+    
+      // Also remove from Firebase (if exists)
+      onValue(dbRef, (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          if (childSnapshot.val() === removedLead) {
+            remove(ref(database, "leads/" + childSnapshot.key));
+          }
+        });
+      }, { onlyOnce: true });
+
+    });
+  });
 }
 
+// --- Delete All ---
+deleteBtn.addEventListener("dblclick", function () {
+  // Challenge: Import the 'remove' function and call it here to delete the leads
+  myLeads = [];
+  ulEl.innerHTML = "";
+  remove(dbRef); // Clear Firebase too
+});
 
-deleteBtn.addEventListener("dblclick", function() {
-    localStorage.clear()
-    myLeads = []
-    render(myLeads)
-})
 
-inputBtn.addEventListener("click", function() {
-    myLeads.push(inputEl.value)
-    inputEl.value = ""
-    localStorage.setItem("myLeads", JSON.stringify(myLeads) )
-    render(myLeads)
-})
+
+

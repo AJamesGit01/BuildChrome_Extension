@@ -12,7 +12,10 @@ Style our app according to the provided design!
 green color -> #5f9341
 
 */
-
+label {
+    color: #5f9341;
+    font-weight: 900;
+}
 
 input { 
     width: 100%;
