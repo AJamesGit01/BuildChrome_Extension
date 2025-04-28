@@ -10,8 +10,8 @@
 ## 🚀 Features
 
 - 🔤 **Save Input**: Users can type a custom URL or text and save it.
-- 🌐 **Save Tab**: Automatically grabs the current tab’s URL and saves it.
 - 🗑️ **Delete All**: Double-click to clear all stored leads.
+- ❌ **Remove Button**: To remove each stored leads manually.
 
 
 
